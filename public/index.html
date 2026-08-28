@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Endangered Species Migration Database — Track, monitor, and manage endangered species data across migration corridors.">
+  <title>Species Migration DB — Endangered Wildlife Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M20 4C15 4 8 10 8 18c0 6 4 10 8 14l4 4 4-4c4-4 8-8 8-14 0-8-7-14-12-14z" fill="url(#g1)"/><defs><linearGradient id="g1" x1="8" y1="4" x2="32" y2="36"><stop stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs></svg>
+        </div>
+        <div class="logo-text">
+          <h1>WildTrack</h1>
+          <span>Migration Database</span>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-tab="dashboard" id="nav-dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-tab="species" id="nav-species">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <span>Species</span>
+      </button>
+      <button class="nav-btn" data-tab="animals" id="nav-animals">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5M8 14v.5M16 14v.5M11.25 16.25h1.5L12 17l-.75-.75z"/><path d="M4.42 11.247A13.152 13.152 0 004 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0112 5c.78 0 1.5.108 2.161.306"/></svg>
+        <span>Animals</span>
+      </button>
+      <button class="nav-btn" data-tab="corridors" id="nav-corridors">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        <span>Corridors</span>
+      </button>
+      <button class="nav-btn" data-tab="rangers" id="nav-rangers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Rangers</span>
+      </button>
+      <button class="nav-btn" data-tab="observations" id="nav-observations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Observations</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="db-status" id="db-status">
+        <div class="status-dot"></div>
+        <span>Checking...</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="main-content" id="main-content">
+    <!-- ─── DASHBOARD TAB ─── -->
+    <section class="tab-content active" id="tab-dashboard">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Dashboard</h2>
+          <p class="page-subtitle">Overview of your endangered species migration database</p>
+        </div>
+        <button class="btn btn-primary" onclick="refreshDashboard()" id="btn-refresh-dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+      </div>
+      <div class="dashboard-grid" id="dashboard-cards">
+        <div class="dash-card" data-tab="species" onclick="switchTab('species')">
+          <div class="dash-card-icon species-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+          </div>
+          <div class="dash-card-info">
+            <span class="dash-card-count" id="count-species">—</span>
+            <span class="dash-card-label">Species</span>
+          </div>
+          <div class="dash-card-glow species-glow"></div>
+        </div>
+        <div class="dash-card" data-tab="animals" onclick="switchTab('animals')">
+          <div class="dash-card-icon animal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/></svg>
+          </div>
+          <div class="dash-card-info">
+            <span class="dash-card-count" id="count-animals">—</span>
+            <span class="dash-card-label">Animals</span>
+          </div>
+          <div class="dash-card-glow animal-glow"></div>
+        </div>
+        <div class="dash-card" data-tab="corridors" onclick="switchTab('corridors')">
+          <div class="dash-card-icon corridor-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          </div>
+          <div class="dash-card-info">
+            <span class="dash-card-count" id="count-corridors">—</span>
+            <span class="dash-card-label">Corridors</span>
+          </div>
+          <div class="dash-card-glow corridor-glow"></div>
+        </div>
+        <div class="dash-card" data-tab="rangers" onclick="switchTab('rangers')">
+          <div class="dash-card-icon ranger-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="dash-card-info">
+            <span class="dash-card-count" id="count-rangers">—</span>
+            <span class="dash-card-label">Rangers</span>
+          </div>
+          <div class="dash-card-glow ranger-glow"></div>
+        </div>
+        <div class="dash-card" data-tab="observations" onclick="switchTab('observations')">
+          <div class="dash-card-icon observation-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="dash-card-info">
+            <span class="dash-card-count" id="count-observations">—</span>
+            <span class="dash-card-label">Observations</span>
+          </div>
+          <div class="dash-card-glow observation-glow"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SPECIES TAB ─── -->
+    <section class="tab-content" id="tab-species">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Species</h2>
+          <p class="page-subtitle">Manage endangered species records</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search species..." id="search-species" oninput="filterTable('species')">
+          </div>
+          <button class="btn btn-primary" onclick="openModal('species')" id="btn-add-species">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Species
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="table-species">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Danger Level</th>
+              <th>Diet Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-species"></tbody>
+        </table>
+        <div class="empty-state" id="empty-species" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+          <p>No species records found</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ANIMALS TAB ─── -->
+    <section class="tab-content" id="tab-animals">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Animals</h2>
+          <p class="page-subtitle">Individual animal tracking records</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search animals..." id="search-animals" oninput="filterTable('animals')">
+          </div>
+          <button class="btn btn-primary" onclick="openModal('animals')" id="btn-add-animal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Animal
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="table-animals">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Age</th>
+              <th>Health Status</th>
+              <th>Species</th>
+              <th>Corridor</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-animals"></tbody>
+        </table>
+        <div class="empty-state" id="empty-animals" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7"/></svg>
+          <p>No animal records found</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CORRIDORS TAB ─── -->
+    <section class="tab-content" id="tab-corridors">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Corridors</h2>
+          <p class="page-subtitle">Migration corridor management</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search corridors..." id="search-corridors" oninput="filterTable('corridors')">
+          </div>
+          <button class="btn btn-primary" onclick="openModal('corridors')" id="btn-add-corridor">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Corridor
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="table-corridors">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Climate</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-corridors"></tbody>
+        </table>
+        <div class="empty-state" id="empty-corridors" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          <p>No corridor records found</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── RANGERS TAB ─── -->
+    <section class="tab-content" id="tab-rangers">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Rangers</h2>
+          <p class="page-subtitle">Field ranger personnel management</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search rangers..." id="search-rangers" oninput="filterTable('rangers')">
+          </div>
+          <button class="btn btn-primary" onclick="openModal('rangers')" id="btn-add-ranger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Ranger
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="table-rangers">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Salary</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-rangers"></tbody>
+        </table>
+        <div class="empty-state" id="empty-rangers" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <p>No ranger records found</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── OBSERVATIONS TAB ─── -->
+    <section class="tab-content" id="tab-observations">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Observation Log</h2>
+          <p class="page-subtitle">Field observation records</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search observations..." id="search-observations" oninput="filterTable('observations')">
+          </div>
+          <button class="btn btn-primary" onclick="openModal('observations')" id="btn-add-observation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Observation
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="table-observations">
+          <thead>
+            <tr>
+              <th>Log ID</th>
+              <th>Date</th>
+              <th>Animal (Species)</th>
+              <th>Ranger</th>
+              <th>Corridor</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-observations"></tbody>
+        </table>
+        <div class="empty-state" id="empty-observations" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+          <p>No observation records found</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ MODAL ═══ -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-title">Add Record</h3>
+        <button class="modal-close" onclick="closeModal()" id="btn-modal-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="modal-form" onsubmit="handleFormSubmit(event)">
+        <div class="modal-body" id="modal-body">
+          <!-- Dynamic form fields -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-modal-submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ DELETE CONFIRM MODAL ═══ -->
+  <div class="modal-overlay" id="delete-overlay" onclick="closeDeleteModal()">
+    <div class="modal modal-sm" onclick="event.stopPropagation()">
+      <div class="modal-header delete-header">
+        <h3>Confirm Delete</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="delete-warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="40" height="40"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <p id="delete-message">Are you sure you want to delete this record?</p>
+          <label class="cascade-check" id="cascade-option" style="display:none;">
+            <input type="checkbox" id="cascade-checkbox">
+            <span>Also delete all dependent records (cascade)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()" id="btn-confirm-delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
