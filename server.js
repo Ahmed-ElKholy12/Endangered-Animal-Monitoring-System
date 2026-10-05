@@ -63,15 +63,56 @@ function requireDB(req, res, next) {
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 app.get('/api/dashboard', requireDB, async (req, res) => {
   try {
-    const result = await pool.request().query(`
-      SELECT
-        (SELECT COUNT(*) FROM SPECIES) AS speciesCount,
-        (SELECT COUNT(*) FROM ANIMAL) AS animalCount,
-        (SELECT COUNT(*) FROM CORRIDOR) AS corridorCount,
-        (SELECT COUNT(*) FROM RANGER) AS rangerCount,
-        (SELECT COUNT(*) FROM OBSERVATION_LOG) AS observationCount
-    `);
-    res.json(result.recordset[0]);
+    const [counts, health, danger, diet, recent] = await Promise.all([
+      // Core counts
+      pool.request().query(`
+        SELECT
+          (SELECT COUNT(*) FROM SPECIES)          AS speciesCount,
+          (SELECT COUNT(*) FROM ANIMAL)           AS animalCount,
+          (SELECT COUNT(*) FROM CORRIDOR)         AS corridorCount,
+          (SELECT COUNT(*) FROM RANGER)           AS rangerCount,
+          (SELECT COUNT(*) FROM OBSERVATION_LOG)  AS observationCount
+      `),
+      // Animal health breakdown
+      pool.request().query(`
+        SELECT Health_Status, COUNT(*) AS cnt
+        FROM ANIMAL
+        GROUP BY Health_Status
+      `),
+      // Species danger level breakdown
+      pool.request().query(`
+        SELECT Danger_Level, COUNT(*) AS cnt
+        FROM SPECIES
+        GROUP BY Danger_Level
+      `),
+      // Species diet type breakdown
+      pool.request().query(`
+        SELECT Diet_Type, COUNT(*) AS cnt
+        FROM SPECIES
+        GROUP BY Diet_Type
+      `),
+      // 8 most recent observations
+      pool.request().query(`
+        SELECT TOP 8
+          o.Log_ID, o.Log_Date,
+          a.Ani_Name, s.Spec_Name,
+          r.Rang_Name, c.Corr_Name
+        FROM OBSERVATION_LOG o
+        LEFT JOIN ANIMAL      a ON o.Ani_ID   = a.Ani_ID
+        LEFT JOIN SPECIES     s ON a.Spec_ID  = s.Spec_ID
+        LEFT JOIN RANGER      r ON o.Rang_ID  = r.Rang_ID
+        LEFT JOIN CORRIDOR    c ON o.Corr_ID  = c.Corr_ID
+        ORDER BY o.Log_Date DESC, o.Log_ID DESC
+      `),
+    ]);
+
+    res.json({
+      ...counts.recordset[0],
+      healthBreakdown: health.recordset,
+      dangerBreakdown: danger.recordset,
+      dietBreakdown:   diet.recordset,
+      recentObservations: recent.recordset,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -291,7 +332,8 @@ app.delete('/api/rangers/:id', requireDB, async (req, res) => {
 app.get('/api/animals', requireDB, async (req, res) => {
   try {
     const result = await pool.request().query(`
-      SELECT a.*, s.Spec_Name, c.Corr_Name
+      SELECT a.Ani_ID, a.Ani_Name, a.ANI_Age, a.Health_Status, a.Spec_ID, a.Corr_ID,
+             s.Spec_Name, c.Corr_Name
       FROM ANIMAL a
       LEFT JOIN SPECIES s ON a.Spec_ID = s.Spec_ID
       LEFT JOIN CORRIDOR c ON a.Corr_ID = c.Corr_ID
@@ -306,7 +348,8 @@ app.get('/api/animals/:id', requireDB, async (req, res) => {
     const result = await pool.request()
       .input('id', sql.Int, req.params.id)
       .query(`
-        SELECT a.*, s.Spec_Name, c.Corr_Name
+        SELECT a.Ani_ID, a.Ani_Name, a.ANI_Age, a.Health_Status, a.Spec_ID, a.Corr_ID,
+               s.Spec_Name, c.Corr_Name
         FROM ANIMAL a
         LEFT JOIN SPECIES s ON a.Spec_ID = s.Spec_ID
         LEFT JOIN CORRIDOR c ON a.Corr_ID = c.Corr_ID
@@ -319,28 +362,30 @@ app.get('/api/animals/:id', requireDB, async (req, res) => {
 
 app.post('/api/animals', requireDB, async (req, res) => {
   try {
-    const { Ani_ID, ANI_Age, Health_Status, Spec_ID, Corr_ID } = req.body;
+    const { Ani_ID, Ani_Name, ANI_Age, Health_Status, Spec_ID, Corr_ID } = req.body;
     await pool.request()
       .input('id', sql.Int, Ani_ID)
+      .input('name', sql.NVarChar(100), Ani_Name || null)
       .input('age', sql.Int, ANI_Age)
       .input('health', sql.NVarChar(50), Health_Status)
       .input('specId', sql.Int, Spec_ID)
       .input('corrId', sql.Int, Corr_ID)
-      .query('INSERT INTO ANIMAL (Ani_ID, ANI_Age, Health_Status, Spec_ID, Corr_ID) VALUES (@id, @age, @health, @specId, @corrId)');
+      .query('INSERT INTO ANIMAL (Ani_ID, Ani_Name, ANI_Age, Health_Status, Spec_ID, Corr_ID) VALUES (@id, @name, @age, @health, @specId, @corrId)');
     res.status(201).json({ message: 'Animal created successfully' });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.put('/api/animals/:id', requireDB, async (req, res) => {
   try {
-    const { ANI_Age, Health_Status, Spec_ID, Corr_ID } = req.body;
+    const { Ani_Name, ANI_Age, Health_Status, Spec_ID, Corr_ID } = req.body;
     const result = await pool.request()
       .input('id', sql.Int, req.params.id)
+      .input('name', sql.NVarChar(100), Ani_Name || null)
       .input('age', sql.Int, ANI_Age)
       .input('health', sql.NVarChar(50), Health_Status)
       .input('specId', sql.Int, Spec_ID)
       .input('corrId', sql.Int, Corr_ID)
-      .query('UPDATE ANIMAL SET ANI_Age=@age, Health_Status=@health, Spec_ID=@specId, Corr_ID=@corrId WHERE Ani_ID=@id');
+      .query('UPDATE ANIMAL SET Ani_Name=@name, ANI_Age=@age, Health_Status=@health, Spec_ID=@specId, Corr_ID=@corrId WHERE Ani_ID=@id');
     if (result.rowsAffected[0] === 0) return res.status(404).json({ error: 'Not found' });
     res.json({ message: 'Animal updated successfully' });
   } catch (err) { res.status(500).json({ error: err.message }); }

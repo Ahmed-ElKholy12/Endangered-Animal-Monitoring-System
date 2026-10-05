@@ -16,7 +16,7 @@
     <div class="sidebar-header">
       <div class="logo">
         <div class="logo-icon">
-          <svg viewBox="0 0 40 40" fill="none"><path d="M20 4C15 4 8 10 8 18c0 6 4 10 8 14l4 4 4-4c4-4 8-8 8-14 0-8-7-14-12-14z" fill="url(#g1)"/><defs><linearGradient id="g1" x1="8" y1="4" x2="32" y2="36"><stop stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs></svg>
+          <svg viewBox="0 0 40 40" fill="none"><path d="M20 4C15 4 8 10 8 18c0 6 4 10 8 14l4 4 4-4c4-4 8-8 8-14 0-8-7-14-12-14z" fill="url(#g1)"/><defs><linearGradient id="g1" x1="8" y1="4" x2="32" y2="36"><stop stop-color="#f97316"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs></svg>
         </div>
         <div class="logo-text">
           <h1>WildTrack</h1>
@@ -60,69 +60,193 @@
 
   <!-- ═══ MAIN CONTENT ═══ -->
   <main class="main-content" id="main-content">
+
     <!-- ─── DASHBOARD TAB ─── -->
     <section class="tab-content active" id="tab-dashboard">
-      <div class="page-header">
-        <div>
-          <h2 class="page-title">Dashboard</h2>
-          <p class="page-subtitle">Overview of your endangered species migration database</p>
+
+      <!-- ══ TOP STAT STRIP ══ -->
+      <div class="mop-stat-strip">
+        <div class="mop-stat" onclick="switchTab('species')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+          <span id="count-species">—</span> Species
         </div>
-        <button class="btn btn-primary" onclick="refreshDashboard()" id="btn-refresh-dashboard">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-          Refresh
+        <div class="mop-stat-divider"></div>
+        <div class="mop-stat" onclick="switchTab('animals')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/></svg>
+          <span id="count-animals">—</span> Animals
+        </div>
+        <div class="mop-stat-divider"></div>
+        <div class="mop-stat" onclick="switchTab('corridors')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          <span id="count-corridors">—</span> Corridors
+        </div>
+        <div class="mop-stat-divider"></div>
+        <div class="mop-stat" onclick="switchTab('rangers')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="count-rangers">—</span> Rangers
+        </div>
+        <div class="mop-stat-divider"></div>
+        <div class="mop-stat" onclick="switchTab('observations')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span id="count-observations">—</span> Observations
+        </div>
+        <button class="mop-refresh-btn" onclick="refreshDashboard()" title="Refresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
         </button>
       </div>
-      <div class="dashboard-grid" id="dashboard-cards">
-        <div class="dash-card" data-tab="species" onclick="switchTab('species')">
-          <div class="dash-card-icon species-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+
+      <!-- ══ MAIN 3-COLUMN GRID ══ -->
+      <div class="mop-grid">
+
+        <!-- ── LEFT: Migration Network ── -->
+        <div class="mop-panel mop-left">
+          <div class="mop-panel-head">
+            <div>
+              <h3 class="mop-panel-title">Migration Network</h3>
+              <p class="mop-panel-sub"><span class="mop-live-dot"></span> Migratory Routes — Active</p>
+            </div>
+            <span class="mop-badge">Live</span>
           </div>
-          <div class="dash-card-info">
-            <span class="dash-card-count" id="count-species">—</span>
-            <span class="dash-card-label">Species</span>
+          <div class="mop-network-wrap">
+            <svg class="mop-network-svg" viewBox="0 0 320 240" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                  <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#2a1a08" stroke-width="0.5"/>
+                </pattern>
+                <radialGradient id="ng" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#f97316" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <rect width="320" height="240" fill="url(#grid)"/>
+              <!-- Routes -->
+              <path d="M55 185 Q110 135 165 100 Q220 68 272 45" fill="none" stroke="#f97316" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.55"/>
+              <path d="M38 210 Q95 170 152 145 Q210 118 272 88" fill="none" stroke="#8b5cf6" stroke-width="1.2" stroke-dasharray="3 5" opacity="0.3"/>
+              <path d="M75 200 Q140 155 195 118 Q248 85 285 60" fill="none" stroke="#a78bfa" stroke-width="1" stroke-dasharray="2 6" opacity="0.2"/>
+              <!-- Compass -->
+              <text x="18" y="22" fill="#f97316" font-size="9" font-family="Inter,sans-serif" font-weight="600" opacity="0.8">N</text>
+              <line x1="22" y1="25" x2="22" y2="36" stroke="#f97316" stroke-width="1.2" opacity="0.6"/>
+              <!-- Node Savannah -->
+              <circle cx="55" cy="185" r="16" fill="url(#ng)"/>
+              <circle cx="55" cy="185" r="7" fill="#1c1208" stroke="#f97316" stroke-width="2" filter="url(#glow)"/>
+              <circle cx="55" cy="185" r="3" fill="#f97316"/>
+              <text x="66" y="200" fill="#fdf3e7" font-size="8.5" font-family="Inter,sans-serif">Savannah Belt</text>
+              <!-- Node Mid -->
+              <circle cx="165" cy="100" r="16" fill="url(#ng)"/>
+              <circle cx="165" cy="100" r="7" fill="#1c1208" stroke="#f97316" stroke-width="2" filter="url(#glow)"/>
+              <circle cx="165" cy="100" r="3" fill="#f97316"/>
+              <text x="175" y="97" fill="#fdf3e7" font-size="8" font-family="Inter,sans-serif" font-weight="600">Real-time</text>
+              <text x="175" y="108" fill="#fdf3e7" font-size="8" font-family="Inter,sans-serif">Valley Pass</text>
+              <!-- Node Ridge -->
+              <circle cx="272" cy="45" r="14" fill="url(#ng)"/>
+              <circle cx="272" cy="45" r="6" fill="#1c1208" stroke="#fb923c" stroke-width="2" filter="url(#glow)"/>
+              <circle cx="272" cy="45" r="3" fill="#fb923c"/>
+              <text x="242" y="38" fill="#fdf3e7" font-size="8" font-family="Inter,sans-serif">Forest Ridge</text>
+              <!-- Small node -->
+              <circle cx="118" cy="155" r="9" fill="url(#ng)" opacity="0.7"/>
+              <circle cx="118" cy="155" r="4" fill="#1c1208" stroke="#fbbf24" stroke-width="1.5"/>
+              <circle cx="118" cy="155" r="2" fill="#fbbf24" opacity="0.8"/>
+              <!-- Animated dot -->
+              <circle r="5" fill="#f97316" filter="url(#glow)" opacity="0.95">
+                <animateMotion dur="7s" repeatCount="indefinite">
+                  <mpath href="#rani"/>
+                </animateMotion>
+              </circle>
+              <path id="rani" d="M55 185 Q110 135 165 100 Q220 68 272 45" fill="none"/>
+              <!-- Emoji icons -->
+              <text x="44" y="182" font-size="11">🐘</text>
+              <text x="157" y="97" font-size="10">🐆</text>
+              <text x="264" y="42" font-size="9">🦅</text>
+            </svg>
           </div>
-          <div class="dash-card-glow species-glow"></div>
+          <!-- Two metric cards -->
+          <div class="mop-metric-row">
+            <div class="mop-metric-card" onclick="switchTab('animals')">
+              <div class="mop-metric-top">
+                <span>Tracked Animals</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="mop-metric-val" id="metric-animals">—</div>
+            </div>
+            <div class="mop-metric-card" onclick="switchTab('observations')">
+              <div class="mop-metric-top">
+                <span>Total Logs</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="mop-metric-val" id="metric-obs">—</div>
+            </div>
+          </div>
         </div>
-        <div class="dash-card" data-tab="animals" onclick="switchTab('animals')">
-          <div class="dash-card-icon animal-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/></svg>
+
+        <!-- ── MIDDLE: Chart + Photo ── -->
+        <div class="mop-col-mid">
+          <div class="mop-panel">
+            <div class="mop-panel-head">
+              <div>
+                <h3 class="mop-panel-title">Observation Activity <span class="mop-panel-sub-inline">(Time-based)</span></h3>
+              </div>
+              <span class="mop-pill">Month ↓</span>
+            </div>
+            <canvas id="obs-line-chart" class="mop-canvas" height="130"></canvas>
+            <div class="mop-legend">
+              <span class="mop-leg-item"><span class="mop-leg-dot" style="background:#f97316"></span>Current period</span>
+              <span class="mop-leg-item"><span class="mop-leg-dot" style="background:#8b5cf6"></span>Previous period</span>
+            </div>
           </div>
-          <div class="dash-card-info">
-            <span class="dash-card-count" id="count-animals">—</span>
-            <span class="dash-card-label">Animals</span>
+          <div class="mop-panel mop-photo-panel">
+            <img src="featured_animal.jpg" alt="Bengal Tiger in jungle at golden hour" class="mop-animal-photo">
+            <div class="mop-photo-overlay">
+              <span class="mop-photo-tag">📍 Jungle Corridor — Bengal Tiger</span>
+            </div>
           </div>
-          <div class="dash-card-glow animal-glow"></div>
         </div>
-        <div class="dash-card" data-tab="corridors" onclick="switchTab('corridors')">
-          <div class="dash-card-icon corridor-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+
+        <!-- ── RIGHT: Bar chart + Species Profile ── -->
+        <div class="mop-col-right">
+          <div class="mop-panel">
+            <div class="mop-panel-head">
+              <h3 class="mop-panel-title">Health &amp; Danger</h3>
+              <span class="mop-pill">All Time</span>
+            </div>
+            <canvas id="health-bar-chart" class="mop-canvas" height="160"></canvas>
+            <div class="mop-legend">
+              <span class="mop-leg-item"><span class="mop-leg-dot" style="background:#f97316"></span>Healthy/Low</span>
+              <span class="mop-leg-item"><span class="mop-leg-dot" style="background:#f87171"></span>Critical/High</span>
+            </div>
           </div>
-          <div class="dash-card-info">
-            <span class="dash-card-count" id="count-corridors">—</span>
-            <span class="dash-card-label">Corridors</span>
+          <div class="mop-panel mop-profile-panel">
+            <h3 class="mop-panel-title" style="margin-bottom:14px">Wildlife Species Profile</h3>
+            <p class="mop-profile-species" id="prof-species">—</p>
+            <div class="mop-profile-grid">
+              <div class="mop-profile-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/></svg>
+                <div><div class="mop-pf-label">Species</div><div class="mop-pf-val" id="prof-sci">—</div></div>
+              </div>
+              <div class="mop-profile-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>
+                <div><div class="mop-pf-label">Age</div><div class="mop-pf-val" id="prof-age">—</div></div>
+              </div>
+              <div class="mop-profile-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" width="13" height="13"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                <div><div class="mop-pf-label">Tracking ID</div><div class="mop-pf-val" id="prof-id">—</div></div>
+              </div>
+              <div class="mop-profile-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" width="13" height="13"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <div><div class="mop-pf-label">Last Sighted</div><div class="mop-pf-val" id="prof-corr">—</div></div>
+              </div>
+              <div class="mop-profile-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" width="13" height="13"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <div><div class="mop-pf-label">Health</div><div class="mop-pf-val" id="prof-health">—</div></div>
+              </div>
+              <div class="mop-profile-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" width="13" height="13"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>
+                <div><div class="mop-pf-label">Diet</div><div class="mop-pf-val" id="prof-diet">—</div></div>
+              </div>
+            </div>
           </div>
-          <div class="dash-card-glow corridor-glow"></div>
         </div>
-        <div class="dash-card" data-tab="rangers" onclick="switchTab('rangers')">
-          <div class="dash-card-icon ranger-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div class="dash-card-info">
-            <span class="dash-card-count" id="count-rangers">—</span>
-            <span class="dash-card-label">Rangers</span>
-          </div>
-          <div class="dash-card-glow ranger-glow"></div>
-        </div>
-        <div class="dash-card" data-tab="observations" onclick="switchTab('observations')">
-          <div class="dash-card-icon observation-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <div class="dash-card-info">
-            <span class="dash-card-count" id="count-observations">—</span>
-            <span class="dash-card-label">Observations</span>
-          </div>
-          <div class="dash-card-glow observation-glow"></div>
-        </div>
+
       </div>
     </section>
 
@@ -146,15 +270,7 @@
       </div>
       <div class="table-container">
         <table class="data-table" id="table-species">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Danger Level</th>
-              <th>Diet Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>ID</th><th>Name</th><th>Danger Level</th><th>Diet Type</th><th>Actions</th></tr></thead>
           <tbody id="tbody-species"></tbody>
         </table>
         <div class="empty-state" id="empty-species" style="display:none;">
@@ -184,16 +300,7 @@
       </div>
       <div class="table-container">
         <table class="data-table" id="table-animals">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Age</th>
-              <th>Health Status</th>
-              <th>Species</th>
-              <th>Corridor</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Health Status</th><th>Species</th><th>Corridor</th><th>Actions</th></tr></thead>
           <tbody id="tbody-animals"></tbody>
         </table>
         <div class="empty-state" id="empty-animals" style="display:none;">
@@ -223,14 +330,7 @@
       </div>
       <div class="table-container">
         <table class="data-table" id="table-corridors">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Climate</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>ID</th><th>Name</th><th>Climate</th><th>Actions</th></tr></thead>
           <tbody id="tbody-corridors"></tbody>
         </table>
         <div class="empty-state" id="empty-corridors" style="display:none;">
@@ -260,15 +360,7 @@
       </div>
       <div class="table-container">
         <table class="data-table" id="table-rangers">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Salary</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Salary</th><th>Actions</th></tr></thead>
           <tbody id="tbody-rangers"></tbody>
         </table>
         <div class="empty-state" id="empty-rangers" style="display:none;">
@@ -298,16 +390,7 @@
       </div>
       <div class="table-container">
         <table class="data-table" id="table-observations">
-          <thead>
-            <tr>
-              <th>Log ID</th>
-              <th>Date</th>
-              <th>Animal (Species)</th>
-              <th>Ranger</th>
-              <th>Corridor</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Log ID</th><th>Date</th><th>Animal (Species)</th><th>Ranger</th><th>Corridor</th><th>Actions</th></tr></thead>
           <tbody id="tbody-observations"></tbody>
         </table>
         <div class="empty-state" id="empty-observations" style="display:none;">
@@ -328,9 +411,7 @@
         </button>
       </div>
       <form id="modal-form" onsubmit="handleFormSubmit(event)">
-        <div class="modal-body" id="modal-body">
-          <!-- Dynamic form fields -->
-        </div>
+        <div class="modal-body" id="modal-body"><!-- Dynamic form fields --></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" id="btn-modal-submit">Save</button>
